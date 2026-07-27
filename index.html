@@ -53,11 +53,10 @@
             letter-spacing: 0.5px;
         }
 
-        /* Наша неоновая бирюзовая рамка */
-        .player-mask {
+        /* Превращаем саму неоновую рамку в прямую физическую ссылку */
+        .player-mask-link {
             width: 100%;
             height: 90px;
-            position: relative;
             background: #111118;
             border-radius: 20px;
             border: 2px solid #00ffcc;
@@ -66,16 +65,38 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
 
-        /* Полная стилизация стандартного серого плеера в неоновый бирюзовый стиль */
-        audio {
-            width: 100%;
-            height: 40px;
-            outline: none;
-            border-radius: 30px;
-            filter: hue-rotate(90deg) invert(0.9) contrast(1.2); /* Магия CSS: делает кнопки бирюзовыми, а фон плеера темным */
+        .player-mask-link:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.5);
+            background: #161622;
+        }
+
+        /* Текст внутри рамки */
+        .play-text {
+            color: #00ffcc;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            user-select: none;
+        }
+
+        /* Треугольник перед текстом */
+        .play-text::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 7px 0 7px 12px;
+            border-color: transparent transparent transparent #00ffcc;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -85,11 +106,10 @@
         <h1 class="radio-title">AlexBit FM</h1>
         <div class="radio-subtitle">В эфире: Музыка и Новости</div>
         
-        <!-- Неоновая рамка, внутри которой лежит ваш плеер -->
-        <div class="player-mask">
-            <!-- Безопасная HTTPS-ссылка через ретранслятор. Она обходит все ошибки ядра Chromium! -->
-            <audio controls src="https://stream-relay.host" crossorigin="anonymous"></audio>
-        </div>
+        <!-- Полная, точная ссылка на твой поток Icecast 2 со всеми портами и точкой монтирования -->
+        <a href="http://caster.fm" target="_blank" class="player-mask-link">
+            <div class="play-text">Включить радио</div>
+        </a>
     </div>
 
 </body>
