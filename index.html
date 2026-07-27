@@ -53,113 +53,50 @@
             letter-spacing: 0.5px;
         }
 
-        /* Наша неоновая рамка (внутри неё находится кнопка) */
-        .player-mask {
+        /* Превращаем саму неоновую рамку в прямую физическую ссылку */
+        .player-mask-link {
             width: 100%;
-            height: 120px;
-            position: relative;
+            height: 90px;
             background: #111118;
             border-radius: 20px;
             border: 2px solid #00ffcc;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
             box-sizing: border-box;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 12px;
-        }
-
-        /* Кастомная бирюзовая кнопка PLAY/PAUSE */
-        .play-btn {
-            width: 50px;
-            height: 50px;
-            background: transparent;
-            border: 2px solid #00ffcc;
-            border-radius: 50%;
             cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.1);
+            text-decoration: none; /* Убираем стандартное подчеркивание ссылки */
             transition: all 0.3s ease;
-            outline: none;
         }
 
-        .play-btn:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
-            background: #00ffcc;
+        .player-mask-link:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.5);
+            background: #161622;
         }
 
-        /* Иконка треугольника (Play) */
-        .icon-play {
+        /* Текст внутри рамки */
+        .play-text {
+            color: #00ffcc;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            user-select: none;
+        }
+
+        /* Треугольник перед текстом */
+        .play-text::before {
+            content: '';
             width: 0;
             height: 0;
             border-style: solid;
-            border-width: 8px 0 8px 14px;
+            border-width: 7px 0 7px 12px;
             border-color: transparent transparent transparent #00ffcc;
-            margin-left: 3px;
-            transition: all 0.2s ease;
-        }
-
-        .play-btn:hover .icon-play {
-            border-color: transparent transparent transparent #111118;
-        }
-
-        /* Иконка паузы (Две полоски) */
-        .playing .icon-play {
-            width: 12px;
-            height: 16px;
-            border: none;
-            margin-left: 0;
-            background: transparent;
-            display: flex;
-            justify-content: space-between;
-        }
-        .playing .icon-play::before,
-        .playing .icon-play::after {
-            content: '';
-            width: 3px;
-            height: 16px;
-            background-color: #00ffcc;
-            border-radius: 1px;
-        }
-        .playing:hover .icon-play::before,
-        .playing:hover .icon-play::after {
-            background-color: #111118;
-        }
-
-        /* Живой визуализатор звука (эквалайзер) */
-        .equalizer {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            height: 20px;
-            gap: 4px;
-        }
-
-        .bar {
-            width: 4px;
-            height: 4px;
-            background: #222533;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .active-eq .bar {
-            background: linear-gradient(to top, #00b3ff, #00ffcc);
-            animation: bounce 0.6s ease infinite alternate;
-        }
-        .active-eq .bar:nth-child(1) { animation-delay: 0.1s; }
-        .active-eq .bar:nth-child(2) { animation-delay: 0.3s; }
-        .active-eq .bar:nth-child(3) { animation-delay: 0.5s; }
-        .active-eq .bar:nth-child(4) { animation-delay: 0.2s; }
-        .active-eq .bar:nth-child(5) { animation-delay: 0.4s; }
-
-        @keyframes bounce {
-            0% { height: 4px; }
-            100% { height: 20px; }
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -169,58 +106,12 @@
         <h1 class="radio-title">AlexBit FM</h1>
         <div class="radio-subtitle">В эфире: Музыка и Новости</div>
         
-        <div class="player-mask">
-            <!-- Бирюзовая кнопка -->
-            <button class="play-btn" id="playBtn" aria-label="Воспроизведение">
-                <div class="icon-play"></div>
-            </button>
-            
-            <!-- Прыгающий эквалайзер -->
-            <div class="equalizer" id="eq">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
-        </div>
+        <!-- Чистая HTML-ссылка. Скрипты полностью удалены! -->
+        <!-- Хвостик /; заставляет браузер открыть чистый медиа-плеер без блокировок -->
+        <a href="http://caster.fm;" target="_blank" class="player-mask-link">
+            <div class="play-text">Включить радио</div>
+        </a>
     </div>
-
-    <script>
-        var btn = document.getElementById('playBtn');
-        var eq = document.getElementById('eq');
-        var audio = new Audio();
-        
-        // Прямой адрес вещания по аналогии с VLC плеером (знак /; обходит кэш)
-        var baseSrc = "http://caster.fm;";
-
-        btn.addEventListener('click', function() {
-            if (audio.paused) {
-                // Добавляем кэш-брейкер времени, чтобы поток запускался мгновенно без зависаний
-                audio.src = baseSrc + "?t=" + new Date().getTime();
-                
-                audio.play()
-                    .then(() => {
-                        btn.classList.add('playing');
-                        eq.classList.add('active-eq');
-                    })
-                    .catch(err => {
-                        // Если браузер зажал http-поток, отправляем резервный запрос в консоль без алертов
-                        console.log("Попытка повторного подключения к Icecast...");
-                        audio.src = "http://caster.fm;stream.mp3";
-                        audio.play().then(() => {
-                            btn.classList.add('playing');
-                            eq.classList.add('active-eq');
-                        });
-                    });
-            } else {
-                audio.pause();
-                audio.src = ''; // Сбрасываем поток для экономии трафика и свободных слотов хостинга
-                btn.classList.remove('playing');
-                eq.classList.remove('active-eq');
-            }
-        });
-    </script>
 
 </body>
 </html>
