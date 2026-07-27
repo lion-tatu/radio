@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlexBit FM — Онлайн Радио</title>
+    <style>
+        body {
+            margin: 0; padding: 0; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background-color: #0b0b0f;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(170,100%,30%,0.1) 0, transparent 50%);
+            font-family: 'Segoe UI', Roboto, sans-serif; overflow: hidden;
+        }
+        .radio-container {
+            background: linear-gradient(135deg, #161622, #0d0d14); color: #ffffff;
+            padding: 40px 30px; border-radius: 28px; text-align: center;
+            width: 100%; max-width: 320px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .radio-title {
+            font-size: 28px; font-weight: 900; letter-spacing: 2px; color: #00ffcc;
+            text-transform: uppercase; margin: 0 0 5px 0; text-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+        }
+        .radio-subtitle { font-size: 13px; color: #8fa0b5; margin-bottom: 30px; font-weight: 500; }
+        .player-mask {
+            width: 100%; height: 120px; position: relative; background: #111118;
+            border-radius: 20px; border: 2px solid #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+            box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px;
+        }
+        .play-btn {
+            width: 50px; height: 50px; background: transparent; border: 2px solid #00ffcc;
+            border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.1); transition: all 0.3s ease; outline: none;
+        }
+        .play-btn:hover { transform: scale(1.08); box-shadow: 0 0 15px rgba(0, 255, 204, 0.4); background: #00ffcc; }
+        .icon-play {
+            width: 0; height: 0; border-style: solid; border-width: 8px 0 8px 14px;
+            border-color: transparent transparent transparent #00ffcc; margin-left: 3px; transition: all 0.2s ease;
+        }
+        .play-btn:hover .icon-play { border-color: transparent transparent transparent #111118; }
+        .playing .icon-play {
+            width: 12px; height: 16px; border: none; margin-left: 0; background: transparent; display: flex; justify-content: space-between;
+        }
+        .playing .icon-play::before, .playing .icon-play::after { content: ''; width: 3px; height: 16px; background-color: #00ffcc; border-radius: 1px; }
+        .playing:hover .icon-play::before, .playing:hover .icon-play::after { background-color: #111118; }
+        .equalizer { display: flex; justify-content: center; align-items: flex-end; height: 20px; gap: 4px; }
+        .bar { width: 4px; height: 4px; background: #222533; border-radius: 2px; transition: all 0.3s ease; }
+        .active-eq .bar { background: linear-gradient(to top, #00b3ff, #00ffcc); animation: bounce 0.6s ease infinite alternate; }
+        .active-eq .bar:nth-child(1) { animation-delay: 0.1s; }
+        .active-eq .bar:nth-child(2) { animation-delay: 0.3s; }
+        .active-eq .bar:nth-child(3) { animation-delay: 0.5s; }
+        .active-eq .bar:nth-child(4) { animation-delay: 0.2s; }
+        .active-eq .bar:nth-child(5) { animation-delay: 0.4s; }
+        @keyframes bounce { 0% { height: 4px; } 100% { height: 20px; } }
+    </style>
+</head>
+<body>
+
+    <div class="radio-container">
+        <h1 class="radio-title">AlexBit FM</h1>
+        <div class="radio-subtitle">В эфире: Музыка и Новости</div>
+        <div class="player-mask">
+            <button class="play-btn" id="playBtn" aria-label="Воспроизведение"><div class="icon-play"></div></button>
+            <div class="equalizer" id="eq"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+        </div>
+    </div>
+
+    <script>
+        var btn = document.getElementById('playBtn');
+        var eq = document.getElementById('eq');
+        var audio = new Audio();
+        
+        // Работает по типу VLC/IPTV-потока. Безопасный ретранслятор для обхода блокировок
+        var baseSrc = "https://stream-relay.host";
+
+        btn.addEventListener('click', function() {
+            if (audio.paused) {
+                audio.src = baseSrc + "?t=" + new Date().getTime();
+                audio.play()
+                    .then(() => { btn.classList.add('playing'); eq.classList.add('active-eq'); })
+                    .catch(err => { alert("Эфир не запущен в BUTT!"); btn.classList.remove('playing'); eq.classList.remove('active-eq'); });
+            } else {
+                audio.pause(); audio.src = ''; btn.classList.remove('playing'); eq.classList.remove('active-eq');
+            }
+        });
+    </script>
+</body>
+</html>
